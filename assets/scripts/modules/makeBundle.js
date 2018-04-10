@@ -89,7 +89,7 @@ function writeBundle() {
 (modules);
     `;
 
-    fs.writeFile('..\\bundle.js', contents, function (err) {
+    fs.writeFile('..\\dist\\bundle.js', contents, function (err) {
         if (err) return console.log(err);
     });
 }

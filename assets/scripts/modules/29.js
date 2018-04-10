@@ -1,306 +1,485 @@
-function (t, e, i) {
-    "use strict";
+function (module, moduleExport, __webpack_require__) {
+    /**
+     * @param {!Object} obj
+     * @return {?}
+     */
+    function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : {
+            default: obj
+        };
+    }
 
-    function n(t) {
-        return t && t.__esModule ? t : {
-            default: t
+    /**
+     * @param {!Array} array
+     * @return {?}
+     */
+    function makeArray(array) {
+        if (Array.isArray(array)) {
+            /** @type {number} */
+            var i = 0;
+            /** @type {!Array} */
+            var ret = Array(array.length);
+            for (; i < array.length; i++) {
+                ret[i] = array[i];
+            }
+            return ret;
+        }
+        return Array.from(array);
+    }
+
+    /**
+     * @param {!AudioNode} t
+     * @param {!Function} e
+     * @return {undefined}
+     */
+    function _get(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
         }
     }
 
-    function r(t) {
-        if (Array.isArray(t)) {
-            for (var e = 0, i = Array(t.length); e < t.length; e++) i[e] = t[e];
-            return i
-        }
-        return Array.from(t)
-    }
-
-    function o(t, e) {
-        if (!(t instanceof e)) throw new TypeError("Cannot call a class as a function")
-    }
-
-    Object.defineProperty(e, "__esModule", {
-        value: !0
+    Object.defineProperty(moduleExport, "__esModule", {
+        value: true
     });
-    var a = function () {
-            function t(t, e) {
-                for (var i = 0; i < e.length; i++) {
-                    var n = e[i];
-                    n.enumerable = n.enumerable || !1, n.configurable = !0, "value" in n && (n.writable = !0), Object.defineProperty(t, n.key, n)
+    var eqPartial = function () {
+        /**
+         * @param {!Function} renderer
+         * @param {string} props
+         * @return {undefined}
+         */
+        function defineProperties(renderer, props) {
+            /** @type {number} */
+            var i = 0;
+            for (; i < props.length; i++) {
+                var descriptor = props[i];
+                descriptor.enumerable = descriptor.enumerable || false;
+                /** @type {boolean} */
+                descriptor.configurable = true;
+                if ("value" in descriptor) {
+                    /** @type {boolean} */
+                    descriptor.writable = true;
                 }
+                Object.defineProperty(renderer, descriptor.key, descriptor);
             }
+        }
 
-            return function (e, i, n) {
-                return i && t(e.prototype, i), n && t(e, n), e
+        return function (renderer, prototypeFuncs, funcs) {
+            if (prototypeFuncs) {
+                defineProperties(renderer.prototype, prototypeFuncs);
             }
-        }(),
-        s = i(3),
-        h = i(2),
-        c = i(0),
-        u = n(c),
-        l = i(7),
-        p = n(l),
-        f = i(30),
-        d = i(33),
-        m = n(d),
-        v = i(34),
-        g = i(35),
-        y = i(36),
-        _ = i(37),
-        x = function () {
-            function t(e, i, n) {
-                o(this, t), this.renderer = e, this.camera = i, this.scene = n, this.time = 0, this.textureWidth = 256, this.textureHeight = 256, this.isAnimating = !1, this.data = {
-                    brain: {
-                        camera: [0, 0, 2],
-                        color: .5,
-                        position: [.5, 0, 0]
-                    },
-                    gloves: {
-                        camera: [.5, 0, 1],
-                        color: .95,
-                        position: [-.25, 0, 0]
-                    },
-                    stadium: {
-                        camera: [-.75, .8, .8],
-                        color: 0,
-                        position: [.15, -.15, .15]
-                    },
-                    lsm: {
-                        camera: [1.5, .8, 1],
-                        color: .85,
-                        position: [-.5, 0, 0]
-                    }
-                }, this.mousePos = new s.Vector2(0, 0), this.targetMousePos = new s.Vector2(0, 0), this.impactVector = new s.Vector3(0, 0, 0), this.targetImpact = new s.Vector3(0, 0, 0), this.impactFollowSpeed = .1, this.colliderMaterial = new s.MeshPhongMaterial({
-                    color: 16711680,
-                    transparent: !0,
-                    depthWrite: !1,
-                    opacity: 0
-                }), this.cameraTarget = new s.Vector3, this.update = this.update.bind(this), this.onChange = this.onChange.bind(this), this.mouseMove = this.mouseMove.bind(this)
+            if (funcs) {
+                defineProperties(renderer, funcs);
             }
+            // return n && t(renderer.prototype, n), a && t(renderer, a), renderer;
+            return renderer;
+        };
+    }();
+    var THREE = __webpack_require__(3);
+    var _globals = __webpack_require__(2);
+    var _prepareStyleProperties = __webpack_require__(0);
+    var _prepareStyleProperties2 = _interopRequireDefault(_prepareStyleProperties);
+    var _normalizeDataUri = __webpack_require__(7);
+    var _normalizeDataUri2 = _interopRequireDefault(_normalizeDataUri);
+    var _UiIcon = __webpack_require__(30);
+    var _deepAssign = __webpack_require__(33);
+    var _deepAssign2 = _interopRequireDefault(_deepAssign);
+    var VertexShader = __webpack_require__(34);
+    var FragmentShader = __webpack_require__(35);
+    var VertexShader2 = __webpack_require__(36);
+    var FragmentShader2 = __webpack_require__(37);
+    var newOrg = function () {
+        /**
+         * @param {!Object} renderer
+         * @param {!Object} camera
+         * @param {string} scene
+         * @return {undefined}
+         */
+        function render(renderer, camera, scene) {
+            _get(this, render);
+            /** @type {!Object} */
+            this.renderer = renderer;
+            /** @type {!Object} */
+            this.camera = camera;
+            /** @type {string} */
+            this.scene = scene;
+            /** @type {number} */
+            this.time = 0;
+            /** @type {number} */
+            this.textureWidth = 256;
+            /** @type {number} */
+            this.textureHeight = 256;
+            /** @type {boolean} */
+            this.isAnimating = false;
+            this.data = {
+                brain: {
+                    camera: [0, 0, 2],
+                    color: .5,
+                    position: [.5, 0, 0]
+                },
+                gloves: {
+                    camera: [.5, 0, 1],
+                    color: .95,
+                    position: [-.25, 0, 0]
+                },
+                stadium: {
+                    camera: [-.75, .8, .8],
+                    color: 0,
+                    position: [.15, -.15, .15]
+                },
+                lsm: {
+                    camera: [1.5, .8, 1],
+                    color: .85,
+                    position: [-.5, 0, 0]
+                }
+            };
+            this.mousePos = new THREE.Vector2(0, 0);
+            this.targetMousePos = new THREE.Vector2(0, 0);
+            this.impactVector = new THREE.Vector3(0, 0, 0);
+            this.targetImpact = new THREE.Vector3(0, 0, 0);
+            /** @type {number} */
+            this.impactFollowSpeed = .1;
+            this.colliderMaterial = new THREE.MeshPhongMaterial({
+                color: 16711680,
+                transparent: true,
+                depthWrite: false,
+                opacity: 0
+            });
+            this.cameraTarget = new THREE.Vector3;
+            this.update = this.update.bind(this);
+            this.onChange = this.onChange.bind(this);
+            this.mouseMove = this.mouseMove.bind(this);
+        }
 
-            return a(t, [{
-                key: "init",
-                value: function () {
-                    return Promise.all([this.loadTextures(), this.loadColliders()]).then(this.afterInit.bind(this))
-                }
-            }, {
-                key: "loadTextures",
-                value: function () {
-                    var t = this;
-                    return Promise.all(Object.keys(this.data).map(function (e) {
-                        return t.loadTexture(e)
-                    })).then(function (e) {
-                        e.forEach(function (e) {
-                            t.data[e.name].texture = e.texture
-                        })
-                    })
-                }
-            }, {
-                key: "loadTexture",
-                value: function (e) {
-                    var i = this;
-                    return fetch("assets/data/" + e + "_pos.json").then(function (t) {
-                        return t.json()
-                    }).then(function (n) {
-                        return {
-                            texture: t.createTexture(n.positions, i.textureWidth, i.textureHeight, e, 1),
-                            name: e
-                        }
-                    })
-                }
-            }, {
-                key: "loadColliders",
-                value: function () {
-                    var e = this;
-                    return Promise.all(Object.keys(this.data).map(function (e) {
-                        return t.loadCollider(e)
-                    })).then(function (t) {
-                        t.forEach(function (t) {
-                            var i = t.name,
-                                n = new s.Mesh(t.geometry, e.colliderMaterial);
-                            n.visible = !1, n.name = i, n.position.z = .01, e.scene.add(n), e.data[i].collider = n
-                        })
-                    })
-                }
-            }, {
-                key: "afterInit",
-                value: function () {
-                    var e;
-                    this.data.home = {
-                        camera: [0, 0, 1],
-                        collider: null,
-                        color: .5,
-                        position: [0, 0, 0],
-                        texture: t.createTexture([], this.textureWidth, this.textureHeight, "home", 1)
-                    }, this.data.end = {
-                        camera: [0, 0, 1],
-                        collider: null,
-                        color: .5,
-                        position: [0, 0, 0],
-                        texture: t.createTexture([], this.textureWidth, this.textureHeight, "home", 1)
-                    }, this.currentName = "home", (e = this.camera.position).set.apply(e, r(this.data[this.currentName].camera)), this.simulationShader = new s.ShaderMaterial({
-                        uniforms: {
-                            tFrom: {
-                                value: this.data[this.currentName].texture
-                            },
-                            tTo: {
-                                value: this.data[this.currentName].texture
-                            },
-                            tMorph: {
-                                value: 0
-                            },
-                            timer: {
-                                value: 0
-                            },
-                            mousePosition: {
-                                value: this.mousePos
-                            },
-                            impactPosition: {
-                                value: this.impactVector
-                            }
+        return eqPartial(render, [{
+            key: "init",
+            value: function () {
+                return Promise.all([this.loadTextures(), this.loadColliders()]).then(this.afterInit.bind(this));
+            }
+        }, {
+            key: "loadTextures",
+            value: function () {
+                var context = this;
+                return Promise.all(Object.keys(this.data).map(function (value) {
+                    return context.loadTexture(value);
+                })).then(function (textureData) {
+                    textureData.forEach(function (data) {
+                        context.data[data.name].texture = data.texture;
+                    });
+                });
+            }
+        }, {
+            key: "loadTexture",
+            value: function (type) {
+                var options = this;
+                return fetch("assets/data/" + type + "_pos.json").then(function (rawResp) {
+                    return rawResp.json();
+                }).then(function (state) {
+                    return {
+                        texture: render.createTexture(state.positions, options.textureWidth, options.textureHeight, type, 1),
+                        name: type
+                    };
+                });
+            }
+        }, {
+            key: "loadColliders",
+            value: function () {
+                var self = this;
+                return Promise.all(Object.keys(this.data).map(function (type) {
+                    return render.loadCollider(type);
+                })).then(function (geometryData) {
+                    geometryData.forEach(function (data) {
+                        var name = data.name;
+                        var mesh = new THREE.Mesh(data.geometry, self.colliderMaterial);
+                        /** @type {boolean} */
+                        mesh.visible = false;
+                        mesh.name = name;
+                        /** @type {number} */
+                        mesh.position.z = .01;
+                        self.scene.add(mesh);
+                        self.data[name].collider = mesh;
+                    });
+                });
+            }
+        }, {
+            key: "afterInit",
+            value: function () {
+                var position;
+                this.data.home = {
+                    camera: [0, 0, 1],
+                    collider: null,
+                    color: .5,
+                    position: [0, 0, 0],
+                    texture: render.createTexture([], this.textureWidth, this.textureHeight, "home", 1)
+                };
+                this.data.end = {
+                    camera: [0, 0, 1],
+                    collider: null,
+                    color: .5,
+                    position: [0, 0, 0],
+                    texture: render.createTexture([], this.textureWidth, this.textureHeight, "home", 1)
+                };
+                /** @type {string} */
+                this.currentName = "home";
+                //equivalent to this.camera.position.set(this.data[this.currentName].camera);
+                (position = this.camera.position).set.apply(position, makeArray(this.data[this.currentName].camera));
+
+                //custom shader material:
+                //docs: https://threejs.org/docs/#api/materials/ShaderMaterial
+                this.simulationShader = new THREE.ShaderMaterial({
+                    uniforms: {
+                        tFrom: {
+                            value: this.data[this.currentName].texture
                         },
-                        vertexShader: y,
-                        fragmentShader: _
-                    }), this.fbo = new m.default(this.textureWidth, this.renderer, this.simulationShader);
-                    for (var i = new s.Geometry, n = 0, o = this.textureWidth * this.textureHeight; n < o; n++) {
-                        var a = new s.Vector3;
-                        a.x = n % this.textureWidth / this.textureWidth, a.y = Math.floor(n / this.textureWidth) / this.textureHeight, i.vertices.push(a)
-                    }
-                    this.renderShader = new s.ShaderMaterial({
-                        uniforms: {
-                            map: {
-                                value: this.fbo.rtt.texture
-                            },
-                            width: {
-                                value: this.textureWidth
-                            },
-                            height: {
-                                value: this.textureHeight
-                            },
-                            pointSize: {
-                                value: 1
-                            },
-                            effector: {
-                                value: 0
-                            },
-                            density: {
-                                value: p.default.dpr
-                            },
-                            timer: {
-                                value: 0
-                            },
-                            tMorph: {
-                                value: 0
-                            },
-                            color: {
-                                value: 0
-                            },
-                            texture: {
-                                value: (new s.TextureLoader).load("assets/3d/particle.png", function (t) {
-                                    t.wrapS = s.RepeatWrapping, t.wrapT = s.RepeatWrapping
-                                })
-                            }
+                        tTo: {
+                            value: this.data[this.currentName].texture
                         },
-                        vertexShader: v,
-                        fragmentShader: g,
-                        depthTest: !0,
-                        transparent: !0
-                    }), this.mesh = new s.Points(i, this.renderShader), this.scene.add(this.mesh), this.raycaster = new s.Raycaster, this.mouseV2 = new s.Vector2, this.currentCollider = this.data[this.currentName].collider, this.bind()
-                }
-            }, {
-                key: "bind",
-                value: function () {
-                    var t = this;
-                    u.default.on(u.default.MOUSE_MOVE, this.mouseMove), u.default.on(u.default.PANEL_CHANGE, this.onChange), (0, f.register)("m", {
-                        match: function () {
-                            t.updateMeshPosition(1, t.currentName)
+                        tMorph: {
+                            value: 0
                         },
-                        unmatch: function () {
-                            t.updateMeshPosition(1, t.currentName)
+                        timer: {
+                            value: 0
+                        },
+                        mousePosition: {
+                            value: this.mousePos
+                        },
+                        impactPosition: {
+                            value: this.impactVector
                         }
-                    })
+                    },
+                    vertexShader: VertexShader2,
+                    fragmentShader: FragmentShader2
+                });
+
+                this.fbo = new _deepAssign2.default(this.textureWidth, this.renderer, this.simulationShader);
+
+
+                var geometry = new THREE.Geometry;
+                //w: 256, h: 256
+                var totalVertices = this.textureWidth * this.textureHeight;
+                for (var y = 0; y < totalVertices; y++) {
+                    var vertice = new THREE.Vector3;
+                    vertice.x = y % this.textureWidth / this.textureWidth;
+                    vertice.y = Math.floor(y / this.textureWidth) / this.textureHeight;
+                    geometry.vertices.push(vertice);
                 }
-            }, {
-                key: "getMeshPosition",
-                value: function (t, e) {
-                    return (0, f.isMoreThan)("m") ? this.data[t].position[e] : [0, -.25, 0][e]
-                }
-            }, {
-                key: "updateMeshPosition",
-                value: function (t, e) {
-                    var i = this;
-                    h.TweenMax.to([this.cameraTarget], t, {
-                        x: this.getMeshPosition(e, 0),
-                        y: this.getMeshPosition(e, 1),
-                        z: this.getMeshPosition(e, 2),
-                        ease: h.Back.easeOut,
-                        onUpdate: function () {
-                            i.camera.lookAt(i.cameraTarget)
-                        }
-                    })
-                }
-            }, {
-                key: "onChange",
-                value: function (t, e, i, n) {
-                    var o = this;
-                    if (!this.isAnimating) {
-                        this.isAnimating = !0, this.currentCollider && (this.currentCollider.visible = !1), this.currentCollider = this.data[n].collider, this.currentCollider && (this.currentCollider.visible = !0), this.simulationShader.uniforms.tFrom.value = this.data[i].texture, this.simulationShader.uniforms.tTo.value = this.data[n].texture, this.simulationShader.uniforms.tMorph.value = 0, this.renderShader.uniforms.tMorph.value = 0;
-                        new h.TimelineLite({
-                            onComplete: function () {
-                                var t;
-                                (t = o.camera.position).set.apply(t, r(o.data[n].camera)), u.default.emit(u.default.PANEL_END), o.isAnimating = !1, o.currentName = n
-                            }
-                        }).add("start").to([this.simulationShader.uniforms.tMorph, this.renderShader.uniforms.tMorph], 6, {
-                            value: 1,
-                            ease: h.Linear.easeNone
-                        }, "start").to(this.camera.position, 6, {
-                            x: this.data[n].camera[0],
-                            y: this.data[n].camera[1],
-                            z: this.data[n].camera[2],
-                            ease: h.Back.easeOut
-                        }, "start").to(this.renderShader.uniforms.color, 6, {
-                            value: this.data[n].color,
-                            ease: h.Power4.easeInOut
-                        }, "start"), this.updateMeshPosition(6, n)
-                    }
-                }
-            }, {
-                key: "mouseMove",
-                value: function (t, e) {
-                    this.targetMousePos.x = t, this.targetMousePos.y = -e, this.mouseV2.x = 2 * t, this.mouseV2.y = 2 * -e, this.currentCollider && (this.impactFollowSpeed = .1, this.raycaster.setFromCamera(this.mouseV2, this.camera), this.intersects = this.raycaster.intersectObjects([this.currentCollider]), this.intersects.length ? (this.targetImpact.x = this.intersects[0].point.x, this.targetImpact.y = this.intersects[0].point.y, this.targetImpact.z = this.intersects[0].point.z) : (this.targetImpact.z = 1, this.impactFollowSpeed = .01))
-                }
-            }, {
-                key: "update",
-                value: function () {
-                    this.time += 1, this.simulationShader.uniforms.timer.value = this.time, this.renderShader.uniforms.timer.value = this.time, this.mousePos.x += .1 * (this.targetMousePos.x - this.mousePos.x), this.mousePos.y += .1 * (this.targetMousePos.y - this.mousePos.y), this.simulationShader.uniforms.mousePosition.value = this.mousePos, this.impactVector.x += (this.targetImpact.x - this.impactVector.x) * this.impactFollowSpeed, this.impactVector.y += (this.targetImpact.y - this.impactVector.y) * this.impactFollowSpeed, this.impactVector.z += (this.targetImpact.z - this.impactVector.z) * this.impactFollowSpeed, this.simulationShader.uniforms.impactPosition.value = this.impactVector, this.fbo.update()
-                }
-            }], [{
-                key: "loadCollider",
-                value: function (t) {
-                    return new Promise(function (e) {
-                        (new s.BufferGeometryLoader).load("assets/data/" + t + "_low.json", function (i) {
-                            e({
-                                geometry: i,
-                                name: t
+                this.renderShader = new THREE.ShaderMaterial({
+                    uniforms: {
+                        map: {
+                            value: this.fbo.rtt.texture
+                        },
+                        width: {
+                            value: this.textureWidth
+                        },
+                        height: {
+                            value: this.textureHeight
+                        },
+                        pointSize: {
+                            value: 1
+                        },
+                        effector: {
+                            value: 0
+                        },
+                        density: {
+                            value: _normalizeDataUri2.default.dpr //1
+                        },
+                        timer: {
+                            value: 0
+                        },
+                        tMorph: {
+                            value: 0
+                        },
+                        color: {
+                            value: 0
+                        },
+                        texture: {
+                            value: (new THREE.TextureLoader).load("assets/3d/particle.png", function (texture) {
+                                texture.wrapS = THREE.RepeatWrapping;
+                                texture.wrapT = THREE.RepeatWrapping;
                             })
-                        })
-                    })
+                        }
+                    },
+                    vertexShader: VertexShader,
+                    fragmentShader: FragmentShader,
+                    depthTest: true,
+                    transparent: true
+                });
+                this.mesh = new THREE.Points(geometry, this.renderShader);
+                this.scene.add(this.mesh);
+                this.raycaster = new THREE.Raycaster;
+                this.mouseV2 = new THREE.Vector2;
+                this.currentCollider = this.data[this.currentName].collider;
+                this.bind();
+            }
+        }, {
+            key: "bind",
+            value: function () {
+                var options = this;
+                _prepareStyleProperties2.default.on(_prepareStyleProperties2.default.MOUSE_MOVE, this.mouseMove);
+                _prepareStyleProperties2.default.on(_prepareStyleProperties2.default.PANEL_CHANGE, this.onChange);
+                (0, _UiIcon.register)("m", {
+                    match: function () {
+                        options.updateMeshPosition(1, options.currentName);
+                    },
+                    unmatch: function () {
+                        options.updateMeshPosition(1, options.currentName);
+                    }
+                });
+            }
+        }, {
+            key: "getMeshPosition",
+            value: function (type, name) {
+                return (0, _UiIcon.isMoreThan)("m") ? this.data[type].position[name] : [0, -.25, 0][name];
+            }
+        }, {
+            key: "updateMeshPosition",
+            value: function (value, name) {
+                var self = this;
+                _globals.TweenMax.to([this.cameraTarget], value, {
+                    x: this.getMeshPosition(name, 0),
+                    y: this.getMeshPosition(name, 1),
+                    z: this.getMeshPosition(name, 2),
+                    ease: _globals.Back.easeOut,
+                    onUpdate: function () {
+                        self.camera.lookAt(self.cameraTarget);
+                    }
+                });
+            }
+        }, {
+            key: "onChange",
+            value: function (type, name, prop, i) {
+                var state = this;
+                if (!this.isAnimating) {
+                    /** @type {boolean} */
+                    this.isAnimating = true;
+                    if (this.currentCollider) {
+                        /** @type {boolean} */
+                        this.currentCollider.visible = false;
+                    }
+                    this.currentCollider = this.data[i].collider;
+                    if (this.currentCollider) {
+                        /** @type {boolean} */
+                        this.currentCollider.visible = true;
+                    }
+                    this.simulationShader.uniforms.tFrom.value = this.data[prop].texture;
+                    this.simulationShader.uniforms.tTo.value = this.data[i].texture;
+                    /** @type {number} */
+                    this.simulationShader.uniforms.tMorph.value = 0;
+                    /** @type {number} */
+                    this.renderShader.uniforms.tMorph.value = 0;
+                    (new _globals.TimelineLite({
+                        onComplete: function () {
+                            var obj1;
+                            (obj1 = state.camera.position).set.apply(obj1, makeArray(state.data[i].camera));
+                            _prepareStyleProperties2.default.emit(_prepareStyleProperties2.default.PANEL_END);
+                            /** @type {boolean} */
+                            state.isAnimating = false;
+                            /** @type {string} */
+                            state.currentName = i;
+                        }
+                    }))
+                        .add("start")
+                        .to([this.simulationShader.uniforms.tMorph, this.renderShader.uniforms.tMorph], 6, {
+                            value: 1,
+                            ease: _globals.Linear.easeNone
+                        }, "start")
+                        .to(this.camera.position, 6, {
+                            x: this.data[i].camera[0],
+                            y: this.data[i].camera[1],
+                            z: this.data[i].camera[2],
+                            ease: _globals.Back.easeOut
+                        }, "start")
+                        .to(this.renderShader.uniforms.color, 6, {
+                            value: this.data[i].color,
+                            ease: _globals.Power4.easeInOut
+                        }, "start");
+                    this.updateMeshPosition(6, i);
                 }
-            }, {
-                key: "createTexture",
-                value: function (e, i, n, r) {
-                    var o = arguments.length > 4 && void 0 !== arguments[4] ? arguments[4] : 1,
-                        a = t.getTextureData(e, i, n, o),
-                        h = new s.DataTexture(a, i, n, s.RGBFormat, s.FloatType);
-                    return h.minFilter = s.NearestFilter, h.magFilter = s.NearestFilter, h.name = r, h.needsUpdate = !0, h
+            }
+        }, {
+            key: "mouseMove",
+            value: function (value, name) {
+                /** @type {number} */
+                this.targetMousePos.x = value;
+                /** @type {number} */
+                this.targetMousePos.y = -name;
+                /** @type {number} */
+                this.mouseV2.x = 2 * value;
+                /** @type {number} */
+                this.mouseV2.y = 2 * -name;
+                if (this.currentCollider) {
+                    /** @type {number} */
+                    this.impactFollowSpeed = .1;
+                    this.raycaster.setFromCamera(this.mouseV2, this.camera);
+                    this.intersects = this.raycaster.intersectObjects([this.currentCollider]);
+                    if (this.intersects.length) {
+                        this.targetImpact.x = this.intersects[0].point.x;
+                        this.targetImpact.y = this.intersects[0].point.y;
+                        this.targetImpact.z = this.intersects[0].point.z;
+                    } else {
+                        /** @type {number} */
+                        this.targetImpact.z = 1;
+                        /** @type {number} */
+                        this.impactFollowSpeed = .01;
+                    }
                 }
-            }, {
-                key: "getTextureData",
-                value: function (t, e, i, n) {
-                    for (var r = e * i * 3, o = t.length, a = new Float32Array(r), s = 0; s < r; s++) a[s] = s < o ? t[s] * n : 0;
-                    return a
+            }
+        }, {
+            key: "update",
+            value: function () {
+                this.time += 1;
+                this.simulationShader.uniforms.timer.value = this.time;
+                this.renderShader.uniforms.timer.value = this.time;
+                this.mousePos.x += .1 * (this.targetMousePos.x - this.mousePos.x);
+                this.mousePos.y += .1 * (this.targetMousePos.y - this.mousePos.y);
+                this.simulationShader.uniforms.mousePosition.value = this.mousePos;
+                this.impactVector.x += (this.targetImpact.x - this.impactVector.x) * this.impactFollowSpeed;
+                this.impactVector.y += (this.targetImpact.y - this.impactVector.y) * this.impactFollowSpeed;
+                this.impactVector.z += (this.targetImpact.z - this.impactVector.z) * this.impactFollowSpeed;
+                this.simulationShader.uniforms.impactPosition.value = this.impactVector;
+                this.fbo.update();
+            }
+        }], [{
+            key: "loadCollider",
+            value: function (type) {
+                return new Promise(function (resolve) {
+                    (new THREE.BufferGeometryLoader).load("assets/data/" + type + "_low.json", function (geojsonGeom) {
+                        resolve({
+                            geometry: geojsonGeom,
+                            name: type
+                        });
+                    });
+                });
+            }
+        }, {
+            key: "createTexture",
+            value: function (positions, width, height, name) {
+                var flag = arguments.length > 4 && void 0 !== arguments[4] ? arguments[4] : 1;
+                var data = render.getTextureData(positions, width, height, flag);
+                var texture = new THREE.DataTexture(data, width, height, THREE.RGBFormat, THREE.FloatType);
+                //return texture.minFilter = THREE.NearestFilter, texture.magFilter = THREE.NearestFilter, texture.name = name, texture.needsUpdate = true, texture;
+                texture.minFilter = THREE.NearestFilter;
+                texture.magFilter = THREE.NearestFilter;
+                texture.name = name;
+                texture.needsUpdate = true;
+                return texture;
+            }
+        }, {
+            key: "getTextureData",
+            value: function (positions, width, height, flag) {
+                /** @type {number} */
+                var bufferSize = width * height * 3;
+                var totalPositions = positions.length;
+                /** @type {!Float32Array} */
+                var buffer = new Float32Array(bufferSize);
+                /** @type {number} */
+                for (var j = 0; j < bufferSize; j++) {
+                    /** @type {number} */
+                    //flag is always 1
+                    buffer[j] = j < totalPositions ? positions[j] * flag : 0;
                 }
-            }]), t
-        }();
-    e.default = x
+                return buffer;
+            }
+        }]), render;
+    }();
+    moduleExport.default = newOrg;
 }
