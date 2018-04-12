@@ -3,7 +3,7 @@ function (module, moduleExport, __webpack_require__) {
      * @param {!Object} obj
      * @return {?}
      */
-    function _interopRequireDefault(obj) {
+    function _makeEsModule(obj) {
         return obj && obj.__esModule ? obj : {
             default: obj
         };
@@ -77,16 +77,22 @@ function (module, moduleExport, __webpack_require__) {
     var THREE = __webpack_require__(3);
     var _globals = __webpack_require__(2);
     var _prepareStyleProperties = __webpack_require__(0);
-    var _prepareStyleProperties2 = _interopRequireDefault(_prepareStyleProperties);
-    var _normalizeDataUri = __webpack_require__(7);
-    var _normalizeDataUri2 = _interopRequireDefault(_normalizeDataUri);
+    var _prepareStyleProperties2 = _makeEsModule(_prepareStyleProperties);
+
+    var _CommonValues = __webpack_require__(7);
+    var _CommonValuesModule = _makeEsModule(_CommonValues);
+
     var _UiIcon = __webpack_require__(30);
-    var _deepAssign = __webpack_require__(33);
-    var _deepAssign2 = _interopRequireDefault(_deepAssign);
+
+    var _frameBuffer = __webpack_require__(33);
+    var _frameBufferModule = _makeEsModule(_frameBuffer);
+
     var VertexShader = __webpack_require__(34);
     var FragmentShader = __webpack_require__(35);
-    var VertexShader2 = __webpack_require__(36);
-    var FragmentShader2 = __webpack_require__(37);
+
+    var PlaneVertexShader = __webpack_require__(36);
+    var PlaneFragmentShader = __webpack_require__(37);
+
     var newOrg = function () {
         /**
          * @param {!Object} renderer
@@ -140,7 +146,7 @@ function (module, moduleExport, __webpack_require__) {
             this.impactFollowSpeed = .1;
             this.colliderMaterial = new THREE.MeshPhongMaterial({
                 color: 16711680,
-                transparent: true,
+                transparent: false,
                 depthWrite: false,
                 opacity: 0
             });
@@ -246,21 +252,32 @@ function (module, moduleExport, __webpack_require__) {
                             value: this.impactVector
                         }
                     },
-                    vertexShader: VertexShader2,
-                    fragmentShader: FragmentShader2
+                    vertexShader: PlaneVertexShader,
+                    fragmentShader: PlaneFragmentShader
                 });
 
-                this.fbo = new _deepAssign2.default(this.textureWidth, this.renderer, this.simulationShader);
+                /**
+                 * This creates a buffer texture.
+                 *
+                 * The most straightforward use is any sort of post-processing effect.
+                 * If you wanted to apply some sort of color correction or shifting to your scene, instead of applying to every single object,
+                 * you could just render your entire scene onto one texture,
+                 * and then apply whatever effect you want to that final texture before rendering it to the screen.
+                 *
+                 * Any sort of shader that requires multiple passes (such as blur) will make use of this technique.
+                 * e.g. https://gamedevelopment.tutsplus.com/tutorials/how-to-write-a-smoke-shader--cms-25587
+                 */
+                this.fbo = new _frameBufferModule.default(this.textureWidth, this.renderer, this.simulationShader);
 
 
                 var geometry = new THREE.Geometry;
                 //w: 256, h: 256
                 var totalVertices = this.textureWidth * this.textureHeight;
-                for (var y = 0; y < totalVertices; y++) {
-                    var vertice = new THREE.Vector3;
-                    vertice.x = y % this.textureWidth / this.textureWidth;
-                    vertice.y = Math.floor(y / this.textureWidth) / this.textureHeight;
-                    geometry.vertices.push(vertice);
+                for (var i = 0; i < totalVertices; i++) {
+                    var vertex = new THREE.Vector3;
+                    vertex.x = i % this.textureWidth / this.textureWidth;
+                    vertex.y = Math.floor(i / this.textureWidth) / this.textureHeight;
+                    geometry.vertices.push(vertex);
                 }
                 this.renderShader = new THREE.ShaderMaterial({
                     uniforms: {
@@ -280,7 +297,7 @@ function (module, moduleExport, __webpack_require__) {
                             value: 0
                         },
                         density: {
-                            value: _normalizeDataUri2.default.dpr //1
+                            value: _CommonValuesModule.default.dpr //1
                         },
                         timer: {
                             value: 0
@@ -290,12 +307,6 @@ function (module, moduleExport, __webpack_require__) {
                         },
                         color: {
                             value: 0
-                        },
-                        texture: {
-                            value: (new THREE.TextureLoader).load("assets/3d/particle.png", function (texture) {
-                                texture.wrapS = THREE.RepeatWrapping;
-                                texture.wrapT = THREE.RepeatWrapping;
-                            })
                         }
                     },
                     vertexShader: VertexShader,
@@ -346,7 +357,7 @@ function (module, moduleExport, __webpack_require__) {
             }
         }, {
             key: "onChange",
-            value: function (type, name, prop, i) {
+            value: function (type, name, currentName, newName) {
                 var state = this;
                 if (!this.isAnimating) {
                     /** @type {boolean} */
@@ -355,13 +366,13 @@ function (module, moduleExport, __webpack_require__) {
                         /** @type {boolean} */
                         this.currentCollider.visible = false;
                     }
-                    this.currentCollider = this.data[i].collider;
+                    this.currentCollider = this.data[newName].collider;
                     if (this.currentCollider) {
                         /** @type {boolean} */
                         this.currentCollider.visible = true;
                     }
-                    this.simulationShader.uniforms.tFrom.value = this.data[prop].texture;
-                    this.simulationShader.uniforms.tTo.value = this.data[i].texture;
+                    this.simulationShader.uniforms.tFrom.value = this.data[currentName].texture;
+                    this.simulationShader.uniforms.tTo.value = this.data[newName].texture;
                     /** @type {number} */
                     this.simulationShader.uniforms.tMorph.value = 0;
                     /** @type {number} */
@@ -369,12 +380,12 @@ function (module, moduleExport, __webpack_require__) {
                     (new _globals.TimelineLite({
                         onComplete: function () {
                             var obj1;
-                            (obj1 = state.camera.position).set.apply(obj1, makeArray(state.data[i].camera));
+                            (obj1 = state.camera.position).set.apply(obj1, makeArray(state.data[newName].camera));
                             _prepareStyleProperties2.default.emit(_prepareStyleProperties2.default.PANEL_END);
                             /** @type {boolean} */
                             state.isAnimating = false;
                             /** @type {string} */
-                            state.currentName = i;
+                            state.currentName = newName;
                         }
                     }))
                         .add("start")
@@ -383,29 +394,29 @@ function (module, moduleExport, __webpack_require__) {
                             ease: _globals.Linear.easeNone
                         }, "start")
                         .to(this.camera.position, 6, {
-                            x: this.data[i].camera[0],
-                            y: this.data[i].camera[1],
-                            z: this.data[i].camera[2],
+                            x: this.data[newName].camera[0],
+                            y: this.data[newName].camera[1],
+                            z: this.data[newName].camera[2],
                             ease: _globals.Back.easeOut
                         }, "start")
                         .to(this.renderShader.uniforms.color, 6, {
-                            value: this.data[i].color,
+                            value: this.data[newName].color,
                             ease: _globals.Power4.easeInOut
                         }, "start");
-                    this.updateMeshPosition(6, i);
+                    this.updateMeshPosition(6, newName);
                 }
             }
         }, {
             key: "mouseMove",
-            value: function (value, name) {
+            value: function (clientX, clientY) {
                 /** @type {number} */
-                this.targetMousePos.x = value;
+                this.targetMousePos.x = clientX;
                 /** @type {number} */
-                this.targetMousePos.y = -name;
+                this.targetMousePos.y = -clientY;
                 /** @type {number} */
-                this.mouseV2.x = 2 * value;
+                this.mouseV2.x = 2 * clientX;
                 /** @type {number} */
-                this.mouseV2.y = 2 * -name;
+                this.mouseV2.y = 2 * -clientY;
                 if (this.currentCollider) {
                     /** @type {number} */
                     this.impactFollowSpeed = .1;
@@ -472,10 +483,10 @@ function (module, moduleExport, __webpack_require__) {
                 /** @type {!Float32Array} */
                 var buffer = new Float32Array(bufferSize);
                 /** @type {number} */
-                for (var j = 0; j < bufferSize; j++) {
+                for (var i = 0; i < bufferSize; i++) {
                     /** @type {number} */
                     //flag is always 1
-                    buffer[j] = j < totalPositions ? positions[j] * flag : 0;
+                    buffer[i] = i < totalPositions ? positions[i] * flag : 0;
                 }
                 return buffer;
             }
